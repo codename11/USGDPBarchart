@@ -1,0 +1,26 @@
+svg{
+    padding: 20px;
+}
+
+/*This controls the Chart Title.*/
+text .title{
+    font-size: 16px;
+}
+
+/*This controls the axis text size.*/
+.axis text{
+    font-size: 8px;
+}
+
+rect{
+    fill: navy;
+}
+
+.bar:hover{
+    fill: whitesmoke;
+    border: 1px solid red;
+}
+
+.headline{
+    font-size: 32px;
+}

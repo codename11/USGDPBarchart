@@ -11,6 +11,7 @@ $(document).ready(() => {
             let values = [];
             let dates = [];
             let quarter = [];
+            let dataset = [];
 
             for(let i=0;i<res.data.length;i++){
 
@@ -33,7 +34,7 @@ $(document).ready(() => {
                 if(parseInt(month) <= 12 && parseInt(month)>9 && parseInt(month)>6 && parseInt(month)>3){
                     q = "Q4";
                 }
-
+                dataset.push([res.data[i][1],year,q]);
                 values.push(res.data[i][1]);
                 dates.push(year);
                 quarter.push([q]);
@@ -47,7 +48,7 @@ $(document).ready(() => {
             //set the margins
             const m = { top: 40, right: 40, bottom: 40, left: 40 };
 
-            const svg = d3.select("body").append("svg")
+            const svg = d3.select("#demo").append("svg")
                 .attr("width", w + m.left + m.right)//Sirina i visina celokupnog svg elementa.
                 .attr("height", h + m.top + m.bottom);
 
@@ -117,44 +118,36 @@ $(document).ready(() => {
             kao parametar za x i y koordinatu bar-a.
             */
 
-            let rect = [];
-
             //draw the rectangles
             g.selectAll("rect")
-                .data(values)
+                .data(dataset)
                 .enter()
                 .append("rect")
+                .attr("id",(d,i) => {
+                    return "tipX"+i
+                })
                 .attr("x", (d, i) => {//d je vrednost iz niza.
                     return xScale(i);//koordinate za tik, odnosno sredinu pojedinacnog bar-a.
                 }) //the displacement along the x is dependendant on the index and the xScale
                 .attr("y", (d) => { 
-                    return yScale(d);//Proracunata vrednost displejsmenta od vrha. 
+                    return yScale(d[0]);//Proracunata vrednost displejsmenta od vrha. 
                 }) //the displacement along the y is dependant on the value and the yScale
                 .attr("height", (d) => { 
-                    return h - yScale(d); //Proracun visine pojedinacnog bara.
+                    return h - yScale(d[0]); //Proracun visine pojedinacnog bara.
                 }) //the height is the difference between the displacement down and the height of the chart h
                 .attr("width", xScale.bandwidth()) //Proracun sirine el. bez padinga. //the width of the rectangles is dependant on the bandwidth
                 .attr("class", "bar")
                 .append("title")
+                .attr("id",(d,i) => {
+                    return "tipY"+i
+                })
                 .text((item, i) => {
-                    rect.push({
-                        value: item,
-                        index: i,
-                        w: w,
-                        h: h,
-                        xScale: xScale(i),
-                        yScale: yScale(item),
-                        elemWidth: xScale.bandwidth(),
-                        elemHeight: h - yScale(item),
-                    });
                     
-                    return item;
+                    return item[1]+" "+item[2]+" \n$"+item[0]+" Billion";
                     
                 });
 
-                //console.log(rect);
-
-            //Draw the  Chart Label:
+            //Draw the GDP Label:
             svg.append("text")
                 .attr("class", "headline")
                 .attr("x", w / 2) //positions it at the middle of the width
@@ -162,9 +155,19 @@ $(document).ready(() => {
                 .attr("font-family", "sans-serif")
                 .attr("fill", "green")
                 .attr("text-anchor", "middle")
-                .text("United States GDP");
-
-
+                .text("United States GDP"); 
+                
+            //Draw the GDP side Label:
+            svg.append("text")
+                .attr("class", "headline1")
+                .attr("x", w / 3.6) //positions it at the middle of the width
+                .attr("y", h / 2.4) //positions it from the top by the margin top
+                .attr("transform", "translate(-180,530) rotate(-90)")
+                .attr("font-family", "sans-serif")
+                .attr("fill", "green")
+                .attr("text-anchor", "middle")
+                .text("Gross Domestic Product");  
+                
         },
         error: (xhr, ajaxOptions, thrownError) => {
 

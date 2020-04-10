@@ -8,14 +8,11 @@ $(document).ready(() => {
 
             res = JSON.parse(response);
 
-            let values = [];
-            let dates = [];
-            let quarter = [];
             let dataset = [];
 
             for(let i=0;i<res.data.length;i++){
 
-                let year = parseInt(res.data[i][0].substr(0, 4));
+                let year = res.data[i][0];
                 let month = res.data[i][0].substring(res.data[i][0].length-5, res.data[i][0].length-3);
                 let q = null;
 
@@ -35,12 +32,8 @@ $(document).ready(() => {
                     q = "Q4";
                 }
                 dataset.push([res.data[i][1],year,q]);
-                values.push(res.data[i][1]);
-                dates.push(year);
-                quarter.push([q]);
 
             }
-            values.sort((a, b) => {return a - b});
 
             const w = 800;
             const h = 600;
@@ -62,7 +55,7 @@ $(document).ready(() => {
             let xScale = d3.scaleBand()
                     .range([0, w])
                     //Since the domain is about the index of the values, the domain must be an array of the indices for the x-axis scale
-                    .domain(dates.map( (d,i) => { 
+                    .domain(dataset.map( (d,i) => { 
 
                         return i; 
 
@@ -73,22 +66,22 @@ $(document).ready(() => {
             prikazuju se istoimene vrednosti, a range je visina(h) po kome se redjaju vrednosti.*/
             let yScale = d3.scaleLinear()
                     .range([h, 0])
-                    .domain([0, values[values.length-1]]);
+                    .domain([0, dataset[dataset.length-1][0]]);
 
             // draw the axis
             let xScale1 = d3.scaleBand()
                     .range([0, w])
                     //Since the domain is about the index of the values, the domain must be an array of the indices for the x-axis scale
-                    .domain(dates.map( (d,i) => { 
+                    .domain(dataset.map( (d,i) => { 
 
-                        return d; 
+                        return d[1].substr(0, 4); 
 
                     })); 
 
             let ind = null;
             const xAxis = d3.axisBottom(xScale1).tickFormat((d,i) => {
                 
-                if(d === 1950){
+                if(parseInt(d) === 1950){
                     ind = i;
                     return d;
                 }
@@ -102,13 +95,15 @@ $(document).ready(() => {
 
             g.append("g")
                 .attr("transform", "translate(0," + h + ")")
-                .attr("class", "axis")
+                .attr("class", "tick axis")
+                .attr("id", "x-axis")
                 .call(xAxis);
 
             const yAxis = d3.axisLeft(yScale); //Y axis
             g.append("g")
                 .attr("transform", "translate(0, 0)")//Ako se pravilno setuje u yScale, onda se ovde ne mora raditi translacija.
-                .attr("class", "axis")
+                .attr("class", "tick axis")
+                .attr("id", "y-axis")
                 .call(yAxis);
 
             /*Dakle x osa je width i po njoj se redjaju indeksi,
@@ -136,19 +131,27 @@ $(document).ready(() => {
                     return h - yScale(d[0]); //Proracun visine pojedinacnog bara.
                 }) //the height is the difference between the displacement down and the height of the chart h
                 .attr("width", xScale.bandwidth()) //Proracun sirine el. bez padinga. //the width of the rectangles is dependant on the bandwidth
+                .attr("data-date", (d,i) => {
+                    return d[1];
+                })
+                .attr("data-gdp", (d,i) => {
+                    return d[0];
+                })
                 .attr("class", "bar")
                 .append("title")
-                .attr("id",(d,i) => {
-                    return "tipY"+i
+                .attr("data-date", (d,i) => {
+                    return d[1];
                 })
+                .attr("id", "tooltip")
                 .text((item, i) => {
                     
-                    return item[1]+" "+item[2]+" \n$"+item[0]+" Billion";
+                    return item[1].substr(0, 4)+" "+item[2]+" \n$"+item[0]+" Billion";
                     
                 });
-
+                
             //Draw the GDP Label:
             svg.append("text")
+                .attr("id", "title")
                 .attr("class", "headline")
                 .attr("x", w / 2) //positions it at the middle of the width
                 .attr("y", m.top) //positions it from the top by the margin top

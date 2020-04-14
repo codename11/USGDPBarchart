@@ -28,3 +28,23 @@ rect{
 .headline1{
     font-size: 16px;
 }
+
+#tooltip{
+    border: 1px solid silver;
+    background-color: whitesmoke;
+    box-shadow:10px 10px 10px 5px whitesmoke; 
+    border-radius: 5px;
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    -webkit-transform: translate(-50%, -50%) !important;
+    -webkit-transform: translate(-50%, -50%) !important;
+    transform: translate(-50%, -50%) !important;
+    padding: 10px;
+    text-align: center;
+}
+
+#demo{
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -87,14 +87,14 @@ $(document).ready(() => {
             //Drawing y axis.
             const xAxis = d3.axisBottom(xScale);
             
-            //Apending x axis to chart.
+            //Appending x axis to chart.
             g.append("g")
                 .attr("transform", "translate(0," + h + ")")
                 .attr("class", "tick axis")
                 .attr("id", "x-axis")
                 .call(xAxis);
 
-            //Apending y axis to chart.
+            //Appending y axis to chart.
             g.append("g")
                 .attr("transform", "translate(0, 0)")
                 .attr("class", "tick axis")

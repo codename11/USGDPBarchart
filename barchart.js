@@ -73,7 +73,7 @@ $(document).ready(() => {
             let years = dataset.map(year => {
                 return new Date(year[0]);
             });
-
+            
             //Calculating year.
             let minYear = new Date(d3.min(years));//Calculating first year in dataset.
             let maxYear = new Date(d3.max(years));//Calculating last year in dataset.
@@ -117,7 +117,7 @@ $(document).ready(() => {
                     /*Setting x coordinate by multiplying index of dataset with bar width.
                      Bars set up'd this way are next to each other, w/o padding or margin.*/
                     return (i*barWidth);
-                  })
+                })
                 .attr("y", (d,i) => { 
                     /*Setting y coordinate by calculating the difference 
                     between max height availiable and height of the particular bar.
@@ -126,7 +126,6 @@ $(document).ready(() => {
                     For last value, we are getting result of 1(one). That means last one is occupaying
                     whole height. In other, it means, it gets zero spaces avaliable from top.*/
                     let percent = d[1] / maxVal;
-                    console.log(percent);
                     return (h - (h * percent));
                 })
                 .attr("height", (d,i) => { 
